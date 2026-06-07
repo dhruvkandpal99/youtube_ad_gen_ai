@@ -38,9 +38,9 @@ export async function generateImage(prompt: string, assetUrl: string | undefined
     // Detect Nike product in prompt
     if (p.includes('nike') || p.includes('pegasus') || p.includes('trail') || p.includes('runner')) {
       if (p.includes('immerse') || p.includes('dynamic world') || p.includes('scrambling')) {
-        return '/ads/nike/ad_outdoor.jpg';
+        return '/ads/nike/ad_outdoor.png';
       }
-      return '/ads/nike/ad_endurance.jpg';
+      return '/ads/nike/ad_outdoor.png';
     }
 
     // Detect Muji notebook in prompt
@@ -52,7 +52,7 @@ export async function generateImage(prompt: string, assetUrl: string | undefined
     }
 
     // Default fallbacks
-    return '/ads/nike/ad_outdoor.jpg';
+    return '/ads/nike/ad_outdoor.png';
   }
 
   // Live Mode API Call
