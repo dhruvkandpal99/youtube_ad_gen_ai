@@ -6,7 +6,7 @@ export const examples: Product[] = [
     name: 'Nike Pegasus Trail 5',
     tagline: 'Built for the trails. Made for the distance.',
     isExample: true,
-    assetUrl: '/examples/nike/asset.jpg',
+    assetUrl: '/examples/nike/asset.jpeg',
     embeddingText: 'high performance trail running shoe, aggressive grip sole, waterproof upper, built for serious outdoor runners, associated with endurance, physical challenge, nature, athletic achievement, grit, adventure, long distance',
     productInfo: `The Nike Pegasus Trail 5 is engineered to deliver high-performance capability for runners who transition between paved roads and rugged off-road terrains. Featuring a redesigned engineered mesh upper, the shoe offers optimal breathability while retaining a protective barrier against trail debris. A reinforced toe cap provides durability in high-wear areas, ensuring longevity when traversing rocky paths and exposed roots.
 

@@ -1,3 +1,19 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+if (typeof ReadableStream !== 'undefined' && !(ReadableStream.prototype as any)[Symbol.asyncIterator]) {
+  (ReadableStream.prototype as any)[Symbol.asyncIterator] = async function* (this: any) {
+    const reader = this.getReader();
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) return;
+        yield value;
+      }
+    } finally {
+      reader.releaseLock();
+    }
+  };
+}
+
 export async function parseDoc(file: File): Promise<string> {
   const extension = file.name.split('.').pop()?.toLowerCase();
   
@@ -12,7 +28,7 @@ export async function parseDoc(file: File): Promise<string> {
   
   if (extension === 'pdf') {
     const pdfjs = await import('pdfjs-dist');
-    pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
+    pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
 
     return new Promise((resolve, reject) => {
       const reader = new FileReader();

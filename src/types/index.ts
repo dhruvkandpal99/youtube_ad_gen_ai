@@ -47,6 +47,7 @@ export type AdConcept = {
   concept: PromptConcept
   imageUrl: string
   accepted: boolean
+  error?: string
 }
 
 export type AppState = {

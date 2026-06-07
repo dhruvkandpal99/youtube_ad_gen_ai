@@ -9,7 +9,7 @@ export async function generateImage(prompt: string, keys: APIKeys | null): Promi
     
     // Detect Nike product in prompt
     if (p.includes('nike') || p.includes('pegasus') || p.includes('trail') || p.includes('runner')) {
-      if (p.includes('muddy') || p.includes('sunrise') || p.includes('splash') || p.includes('outdoor')) {
+      if (p.includes('immerse') || p.includes('dynamic world') || p.includes('scrambling')) {
         return '/ads/nike/ad_outdoor.jpg';
       }
       return '/ads/nike/ad_endurance.jpg';
@@ -17,7 +17,7 @@ export async function generateImage(prompt: string, keys: APIKeys | null): Promi
 
     // Detect Muji notebook in prompt
     if (p.includes('muji') || p.includes('notebook') || p.includes('journal') || p.includes('desk') || p.includes('a5')) {
-      if (p.includes('bullet') || p.includes('window') || p.includes('mug') || p.includes('study')) {
+      if (p.includes('stillness') || p.includes('focused concentration') || p.includes('minimalist, serene workspace')) {
         return '/ads/muji/ad_study.jpg';
       }
       return '/ads/muji/ad_minimal.jpg';

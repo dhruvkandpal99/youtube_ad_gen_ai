@@ -1,9 +1,8 @@
 export async function callGeminiTextWithFallback(promptText: string, key: string): Promise<string> {
   const models = [
+    'gemini-2.5-pro',
     'gemini-2.5-flash',
     'gemini-2.0-flash',
-    'gemini-1.5-flash',
-    'gemini-1.5-flash-8b',
   ];
   let lastError: Error | null = null;
   for (const model of models) {
@@ -39,35 +38,76 @@ export async function callGeminiTextWithFallback(promptText: string, key: string
 
 export async function callGeminiImageWithFallback(promptText: string, key: string): Promise<string> {
   const models = [
-    'imagen-3.0-generate-002',
-    'gemini-2.0-flash-preview-image-generation',
-    'imagen-3.0-generate-001',
+    { name: 'gemini-3.1-flash-image', protocol: 'generateContent' },
+    { name: 'gemini-3-pro-image', protocol: 'generateContent' },
+    { name: 'gemini-2.5-flash-image', protocol: 'generateContent' },
   ];
   let lastError: Error | null = null;
   for (const model of models) {
     try {
-      const res = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: promptText }] }],
-          }),
+      if (model.protocol === 'generateContent') {
+        const res = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/${model.name}:generateContent?key=${key}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: promptText }] }],
+            }),
+          }
+        );
+        if (!res.ok) {
+          const errText = await res.text();
+          throw new Error(`Gemini Image Error (${model.name}): ${res.status} ${errText}`);
         }
-      );
-      if (!res.ok) {
-        const errText = await res.text();
-        throw new Error(`Gemini Image Error (${model}): ${res.status} ${errText}`);
+        const data = await res.json();
+        
+        const parts = data.candidates?.[0]?.content?.parts;
+        if (!parts || !Array.isArray(parts)) {
+          throw new Error(`Gemini Image returned invalid response format for ${model.name}`);
+        }
+        
+        let base64: string | undefined;
+        for (const part of parts) {
+          if (part.inlineData?.data) {
+            base64 = part.inlineData.data;
+            break;
+          }
+        }
+        
+        if (!base64) {
+          throw new Error(`Gemini Image returned no inline image data for ${model.name}`);
+        }
+        return base64;
+      } else {
+        // predict protocol for dedicated Imagen models
+        const res = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/${model.name}:predict?key=${key}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              instances: [{ prompt: promptText }],
+              parameters: {
+                sampleCount: 1,
+                aspectRatio: '16:9',
+              },
+            }),
+          }
+        );
+        if (!res.ok) {
+          const errText = await res.text();
+          throw new Error(`Gemini Imagen Predict Error (${model.name}): ${res.status} ${errText}`);
+        }
+        const data = await res.json();
+        const base64 = data.predictions?.[0]?.bytesBase64Encoded;
+        if (!base64) {
+          throw new Error(`Gemini Imagen Predict returned no bytesBase64Encoded for ${model.name}: ${JSON.stringify(data)}`);
+        }
+        return base64;
       }
-      const data = await res.json();
-      const base64 = data.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
-      if (!base64) {
-        throw new Error(`Gemini Image returned invalid response for ${model}: ${JSON.stringify(data)}`);
-      }
-      return base64;
     } catch (err) {
-      console.warn(`Model ${model} failed, trying next...`, err);
+      console.warn(`Model ${model.name} failed, trying next...`, err);
       lastError = err as Error;
       continue;
     }

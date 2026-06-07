@@ -45,12 +45,19 @@ export default function AdGeneration() {
             dispatch({
               type: 'SET_AD_CONCEPTS',
               payload: nextAdConcepts.map(ad => 
-                ad.id === placeholderId ? { ...ad, imageUrl: url } : ad
+                ad.id === placeholderId ? { ...ad, imageUrl: url, error: undefined } : ad
               ),
             });
           })
           .catch(err => {
             console.error('Error generating image', err);
+            const errMsg = err instanceof Error ? err.message : 'Error generating image';
+            dispatch({
+              type: 'SET_AD_CONCEPTS',
+              payload: nextAdConcepts.map(ad => 
+                ad.id === placeholderId ? { ...ad, error: errMsg } : ad
+              ),
+            });
           });
       });
     }
@@ -75,14 +82,32 @@ export default function AdGeneration() {
     const targetAd = adConcepts.find(ad => ad.id === id);
     if (!targetAd) return;
 
-    // Call generateImage API
-    const url = await generateImage(targetAd.concept.prompt, apiKeys);
-    
-    // Update imageUrl in state
-    const updated = adConcepts.map(ad => 
-      ad.id === id ? { ...ad, imageUrl: url, accepted: false } : ad
-    );
-    dispatch({ type: 'SET_AD_CONCEPTS', payload: updated });
+    // Reset error and image state before generating
+    dispatch({
+      type: 'SET_AD_CONCEPTS',
+      payload: adConcepts.map(ad => 
+        ad.id === id ? { ...ad, imageUrl: '', error: undefined, accepted: false } : ad
+      ),
+    });
+
+    try {
+      const url = await generateImage(targetAd.concept.prompt, apiKeys);
+      dispatch({
+        type: 'SET_AD_CONCEPTS',
+        payload: adConcepts.map(ad => 
+          ad.id === id ? { ...ad, imageUrl: url, error: undefined, accepted: false } : ad
+        ),
+      });
+    } catch (err: unknown) {
+      console.error('Error regenerating image', err);
+      const errMsg = err instanceof Error ? err.message : 'Error generating image';
+      dispatch({
+        type: 'SET_AD_CONCEPTS',
+        payload: adConcepts.map(ad => 
+          ad.id === id ? { ...ad, error: errMsg, accepted: false } : ad
+        ),
+      });
+    }
   };
 
   const handleGoBackAndGenerateNew = async () => {
