@@ -40,7 +40,7 @@ export default function AdGeneration() {
         const placeholderId = placeholders[idx].id;
         
         // Async generate
-        generateImage(p.prompt, apiKeys)
+        generateImage(p.prompt, product.assetUrl, apiKeys)
           .then(url => {
             dispatch({
               type: 'SET_AD_CONCEPTS',
@@ -91,7 +91,7 @@ export default function AdGeneration() {
     });
 
     try {
-      const url = await generateImage(targetAd.concept.prompt, apiKeys);
+      const url = await generateImage(targetAd.concept.prompt, product.assetUrl, apiKeys);
       dispatch({
         type: 'SET_AD_CONCEPTS',
         payload: adConcepts.map(ad => 

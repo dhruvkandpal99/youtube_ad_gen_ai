@@ -1,7 +1,35 @@
 import { APIKeys } from '../../types';
 import { callGeminiImageWithFallback } from './geminiHelper';
 
-export async function generateImage(prompt: string, keys: APIKeys | null): Promise<string> {
+async function getBase64FromUrl(url: string): Promise<{ mimeType: string; base64Data: string } | null> {
+  if (!url) return null;
+  try {
+    let dataUrl = url;
+    if (!url.startsWith('data:')) {
+      const res = await fetch(url);
+      const blob = await res.blob();
+      dataUrl = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+    }
+    const matches = dataUrl.match(/^data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+);base64,(.+)$/);
+    if (matches) {
+      return {
+        mimeType: matches[1],
+        base64Data: matches[2]
+      };
+    }
+    return null;
+  } catch (err) {
+    console.error('Failed to convert asset URL to base64', err);
+    return null;
+  }
+}
+
+export async function generateImage(prompt: string, assetUrl: string | undefined, keys: APIKeys | null): Promise<string> {
   const isDemo = !keys || !keys.imageKey || !keys.imageProvider;
 
   if (isDemo) {
@@ -29,7 +57,8 @@ export async function generateImage(prompt: string, keys: APIKeys | null): Promi
 
   // Live Mode API Call
   if (keys.imageProvider === 'gemini') {
-    const base64 = await callGeminiImageWithFallback(prompt, keys.imageKey);
+    const refImage = assetUrl ? await getBase64FromUrl(assetUrl) : null;
+    const base64 = await callGeminiImageWithFallback(prompt, keys.imageKey, refImage || undefined);
     return `data:image/jpeg;base64,${base64}`;
   } else if (keys.imageProvider === 'openai') {
     const res = await fetch('https://api.openai.com/v1/images/generations', {

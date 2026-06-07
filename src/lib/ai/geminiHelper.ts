@@ -36,7 +36,11 @@ export async function callGeminiTextWithFallback(promptText: string, key: string
   throw lastError || new Error('All Gemini text models failed');
 }
 
-export async function callGeminiImageWithFallback(promptText: string, key: string): Promise<string> {
+export async function callGeminiImageWithFallback(
+  promptText: string,
+  key: string,
+  referenceImage?: { mimeType: string; base64Data: string }
+): Promise<string> {
   const models = [
     { name: 'gemini-3.1-flash-image', protocol: 'generateContent' },
     { name: 'gemini-3-pro-image', protocol: 'generateContent' },
@@ -46,13 +50,25 @@ export async function callGeminiImageWithFallback(promptText: string, key: strin
   for (const model of models) {
     try {
       if (model.protocol === 'generateContent') {
+        const parts: Array<{ text?: string; inlineData?: { mimeType: string; data: string } }> = [
+          { text: promptText },
+        ];
+        if (referenceImage) {
+          parts.push({
+            inlineData: {
+              mimeType: referenceImage.mimeType,
+              data: referenceImage.base64Data,
+            },
+          });
+        }
+        
         const res = await fetch(
           `https://generativelanguage.googleapis.com/v1beta/models/${model.name}:generateContent?key=${key}`,
           {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              contents: [{ parts: [{ text: promptText }] }],
+              contents: [{ parts }],
             }),
           }
         );
@@ -62,13 +78,13 @@ export async function callGeminiImageWithFallback(promptText: string, key: strin
         }
         const data = await res.json();
         
-        const parts = data.candidates?.[0]?.content?.parts;
-        if (!parts || !Array.isArray(parts)) {
+        const resParts = data.candidates?.[0]?.content?.parts;
+        if (!resParts || !Array.isArray(resParts)) {
           throw new Error(`Gemini Image returned invalid response format for ${model.name}`);
         }
         
         let base64: string | undefined;
-        for (const part of parts) {
+        for (const part of resParts) {
           if (part.inlineData?.data) {
             base64 = part.inlineData.data;
             break;
