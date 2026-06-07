@@ -1,0 +1,7 @@
+# Nike Pegasus Trail 5 - Product Information
+
+The Nike Pegasus Trail 5 is engineered to deliver high-performance capability for runners who transition between paved roads and rugged off-road terrains. Featuring a redesigned engineered mesh upper, the shoe offers optimal breathability while retaining a protective barrier against trail debris. A reinforced toe cap provides durability in high-wear areas, ensuring longevity when traversing rocky paths and exposed roots.
+
+At the core of the shoe's technology is the full-length ReactX foam midsole, which offers 13% more energy return compared to previous React technology while reducing the midsole's carbon footprint by at least 43%. This lightweight cushioning absorbs heavy impact on downhill descents and provides a springy, responsive ride on flat sections. The outsole is constructed from Nike's high-abrasion ATC (All Terrain Compound) rubber, featuring a generative traction pattern that provides exceptional grip on wet climbs and stability on technical descents.
+
+Designed for the dedicated outdoor athlete, the Pegasus Trail 5 is built for runners who refuse to let changing weather conditions or challenging terrain limit their training. Whether tackling a daily 5-mile forest run, a grueling 50k ultramarathon, or a wet mountain scramble, this shoe provides the perfect balance of road-smooth comfort and trail-ready durability. It is the ultimate hybrid companion for runners seeking adventure, endurance, and physical achievement.

@@ -11,6 +11,13 @@ const config: Config = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        ytBackground: "#0f0f0f",
+        ytSurface: "#272727",
+        ytBorder: "#3f3f3f",
+        ytTextPrimary: "#ffffff",
+        ytTextSecondary: "#aaaaaa",
+        ytRed: "#ff0000",
+        ytGreen: "#2ba640", // Added YouTube green for success states
       },
     },
   },

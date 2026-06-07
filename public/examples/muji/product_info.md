@@ -1,0 +1,7 @@
+# Muji Recycled Paper Notebook A5 - Product Information
+
+The Muji Recycled Paper Notebook A5 embodies the core principles of simplicity, utility, and environmental mindfulness. Featuring a sturdy yet flexible cover made from unbleached kraft paper, this notebook is designed to withstand daily carry in a bag or backpack without adding unnecessary weight. The A5 dimensions strike the perfect balance between providing ample space for structured thoughts and maintaining a compact, portable profile.
+
+The notebook contains 80 sheets of premium, environmentally friendly recycled paper. Through careful manufacturing processes, the paper achieves a remarkably smooth texture that minimizes ink feathering and show-through (ghosting), even when using gel pens or fountain pens. The pages are bound using a durable thread-stitching method, allowing the notebook to lie completely flat when opened. This design ensures comfort and ease of writing across the entire page, from the first sheet to the last.
+
+Ideal for journaling, sketching, note-taking, and professional planning, the notebook adapts seamlessly to the user's needs. Its lack of margins, headers, or decorative elements encourages structured thoughts to flow without predefined boundaries. It is highly valued by students, creative professionals, and proponents of minimalist bullet journaling who seek an organic, distraction-free writing experience.
